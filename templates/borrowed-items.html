@@ -1,0 +1,39 @@
+{% extends "tables.html" %}
+{% block body %}
+<table>
+    <thead>
+        <tr>
+            <th>Borrow Id</th>
+            <th>Time Quota</th>
+            <th>Claim Status</th>
+            <th>Return Status</th>
+            <th>Pending Id</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for index in range(borrowed['borrow_id']|length) %}
+        <tr>
+            <td>{{ borrowed['pending_id'][index] }}</td>
+            <td>
+                {{ borrowed['time_quota'][index].strftime('%Y-%m-%d %I:%M:%S %p') if borrowed['time_quota'][index] is not none else "Item still on hold" }}
+            </td>
+            <td>{{ 'Yes' if borrowed['is_claimed'][index] else 'No' }}</td>
+            <td>{{ 'Yes' if borrowed['is_returned'][index] else 'No' }}</td>
+            <td>{{ borrowed['pending_id'][index] }}</td>
+            <td>
+                {% if not borrowed['is_claimed'][index] %}
+                <button onclick="location.href='{{ url_for('admin.claim_item', id=borrowed['pending_id'][index]) }}';" class="action-btn gradient-claim-btn">
+                    Claim
+                </button>
+                {% else %}
+                <button onclick="location.href='{{ url_for('admin.return_item', id=borrowed['pending_id'][index]) }}';" class="action-btn flat-return-btn">
+                    Return
+                </button>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
